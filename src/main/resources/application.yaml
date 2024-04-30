@@ -1,0 +1,25 @@
+# the name of Camel
+camel:
+  main.name: HL7 to Kafka
+  component:
+    kafka:
+      brokers: localhost:9092
+      ssl-endpoint-algorithm: PLAINTEXT
+      ssl-truststore-password:
+      ssl-keystore-password:
+
+endpoint:
+  kafka.topic: hl7-topic
+  hl7.url: tcp://localhost:8888
+
+management.endpoints.web.exposure.include: info,health,camelroutes
+management.endpoint:
+  health.enabled: true
+  camelroutes:
+    enabled: true
+    read-only: true
+# to configure logging levels
+#logging.level.org.springframework = INFO
+#logging.level.org.apache.camel.spring.boot = INFO
+#logging.level.org.apache.camel.impl = DEBUG
+#logging.level.sample.camel = DEBUG

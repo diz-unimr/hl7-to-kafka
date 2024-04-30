@@ -1,0 +1,66 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'checkstyle'
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/snapshot' }
+    maven { url 'https://repo.spring.io/milestone' }
+}
+
+ext {
+//    set('springBootVersion', "2.7.5")
+//    set('springCamelVersion', "3.18.3")
+    set('springBootVersion', "3.2.5")
+    set('springCamelVersion', "4.5.0")
+}
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-undertow:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+
+    implementation "org.apache.camel.springboot:camel-spring-boot-starter:$springCamelVersion"
+    implementation "org.apache.camel.springboot:camel-stream-starter:$springCamelVersion"
+    implementation "org.apache.camel.springboot:camel-endpointdsl-starter:$springCamelVersion"
+    implementation "org.apache.camel.springboot:camel-hl7-starter:$springCamelVersion"
+    implementation "org.apache.camel.springboot:camel-kafka-starter:$springCamelVersion"
+    implementation "org.apache.camel:camel-componentdsl:4.5.0"
+    implementation "org.apache.camel:camel-netty:4.5.0"
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion") {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation "org.apache.camel:camel-test-spring-junit5:$springCamelVersion"
+}
+
+group = 'de.unimarburg.diz'
+version = '1.0.0-SNAPSHOT'
+description = 'HL7 to Kafka route'
+java.sourceCompatibility = JavaVersion.VERSION_17
+
+
+test {
+    useJUnitPlatform()
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = false
+    }
+}
+
+check.dependsOn jacocoTestReport
+
+
+jar {
+    enabled = false
+}
+
+bootJar {
+    mainClass.set('de.unimarburg.diz.hl7tokafka.Hl7ToKafkaApplication')
+}
