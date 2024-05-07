@@ -10,7 +10,9 @@ camel:
 
 endpoint:
   kafka.topic: hl7-topic
-  hl7.url: tcp://localhost:8888
+  hl7:
+    url: localhost:8888
+    encoding: iso-8859-1
 
 management.endpoints.web.exposure.include: info,health,camelroutes
 management.endpoint:

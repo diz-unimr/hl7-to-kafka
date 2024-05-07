@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'jacoco'
     id 'org.springframework.boot' version '3.2.5'
-    id 'checkstyle'
+    id 'com.diffplug.spotless' version '6.25.0'
 }
 
 repositories {
@@ -15,7 +15,7 @@ ext {
 //    set('springBootVersion', "2.7.5")
 //    set('springCamelVersion', "3.18.3")
     set('springBootVersion', "3.2.5")
-    set('springCamelVersion', "4.5.0")
+    set('springCamelVersion', "4.4.2")
 }
 
 dependencies {
@@ -26,10 +26,11 @@ dependencies {
     implementation "org.apache.camel.springboot:camel-spring-boot-starter:$springCamelVersion"
     implementation "org.apache.camel.springboot:camel-stream-starter:$springCamelVersion"
     implementation "org.apache.camel.springboot:camel-endpointdsl-starter:$springCamelVersion"
+    implementation "org.apache.camel.springboot:camel-mllp-starter:$springCamelVersion"
     implementation "org.apache.camel.springboot:camel-hl7-starter:$springCamelVersion"
     implementation "org.apache.camel.springboot:camel-kafka-starter:$springCamelVersion"
-    implementation "org.apache.camel:camel-componentdsl:4.5.0"
-    implementation "org.apache.camel:camel-netty:4.5.0"
+    implementation "org.apache.camel:camel-componentdsl:$springCamelVersion"
+//    implementation "org.apache.camel:camel-netty:$springCamelVersion"
 
     testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion") {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -39,7 +40,7 @@ dependencies {
 
 group = 'de.unimarburg.diz'
 version = '1.0.0-SNAPSHOT'
-description = 'HL7 to Kafka route'
+description = 'HL7 to Kafka'
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 
@@ -64,3 +65,13 @@ jar {
 bootJar {
     mainClass.set('de.unimarburg.diz.hl7tokafka.Hl7ToKafkaApplication')
 }
+
+//spotless {
+//    java {
+//        importOrder()
+//        removeUnusedImports()
+//        formatAnnotations()
+//        // palantirJavaFormat()
+//        googleJavaFormat().aosp().reflowLongStrings().skipJavadocFormatting()
+//    }
+//}
