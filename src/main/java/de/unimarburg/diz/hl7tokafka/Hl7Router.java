@@ -7,8 +7,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
 import org.apache.camel.component.kafka.KafkaConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.wildfly.common.annotation.NotNull;
@@ -16,7 +14,6 @@ import org.wildfly.common.annotation.NotNull;
 @Component
 public class Hl7Router extends EndpointRouteBuilder {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Hl7Router.class);
     private static final DateTimeFormatter DATE_FORMATTER =
         DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     private final String hl7Url;
@@ -37,7 +34,7 @@ public class Hl7Router extends EndpointRouteBuilder {
 
         from(mllp(hl7Url).charsetName(encoding)).routeId("hl7Listener")
             .onException(Exception.class).handled(true).transform(
-                ack()) // auto-generates negative ack because of exception in Exchange
+                ack()) // auto-generates negative ack because of exception
             .end().log("Message received: ${header.CamelHL7MessageControl}")
             .unmarshal().hl7().process(ex -> ex.getIn()
                 .setHeader(KafkaConstants.OVERRIDE_TIMESTAMP, convertTimestamp(
