@@ -29,19 +29,23 @@ public class Hl7Router extends EndpointRouteBuilder {
         this.kafkaTopic = kafkaTopic;
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
     @Override
     public void configure() {
 
         from(mllp(hl7Url).charsetName(encoding)).routeId("hl7Listener")
             .onException(Exception.class).handled(true).transform(
                 ack()) // auto-generates negative ack because of exception
-            .end().log("Message received: ${header.CamelHL7MessageControl}")
-            .unmarshal().hl7().process(ex -> ex.getIn()
-                .setHeader(KafkaConstants.OVERRIDE_TIMESTAMP, convertTimestamp(
-                    ex.getIn().getHeader("CamelHL7Timestamp", String.class))))
+            .end().unmarshal().hl7()
+            .log("Message received: ${header.CamelHL7MessageControl}").process(
+                ex -> ex.getIn().setHeader(KafkaConstants.OVERRIDE_TIMESTAMP,
+                    convertTimestamp(
+                        ex.getIn().getHeader("CamelHL7Timestamp", String.class))))
 
             .setHeader(KafkaConstants.KEY, header("CamelHL7MessageControl"))
-            .to(kafka(kafkaTopic)).onCompletion().transform(ack()).end();
+            .to(kafka(kafkaTopic)).onCompletion()
+            .log("Message send to Kafka topic: " + kafkaTopic).transform(ack())
+            .end();
     }
 
     private long convertTimestamp(String dateString) {
