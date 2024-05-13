@@ -11,6 +11,7 @@ RUN gradle build --info && \
 
 FROM gcr.io/distroless/java17:nonroot
 
+USER nonroot
 WORKDIR /opt/hl7-to-kafka
 COPY --from=build /home/gradle/src/dependencies/ ./
 COPY --from=build /home/gradle/src/spring-boot-loader/ ./

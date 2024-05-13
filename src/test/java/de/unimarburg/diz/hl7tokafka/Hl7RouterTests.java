@@ -1,6 +1,5 @@
 package de.unimarburg.diz.hl7tokafka;
 
-import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
@@ -9,7 +8,6 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.MockEndpointsAndSkip;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,18 +16,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(properties = {"endpoint.hl7.url=localhost:8888",
     "endpoint.kafka.topic=hl7-topic"})
 @MockEndpointsAndSkip("kafka:hl7-topic")
-//@UseAdviceWith
 public class Hl7RouterTests {
 
-    @Autowired
-    CamelContext context;
-
     @Produce("mllp:localhost:8888")
-    ProducerTemplate template;
+    private ProducerTemplate template;
 
     @EndpointInject("mock:kafka:hl7-topic")
-    MockEndpoint mock;
+    private MockEndpoint mock;
 
+    @SuppressWarnings("checkstyle:LineLength")
     private static String hl7TestMessage() {
         return """
             MSH|^~\\&|SendingApp|SendingFac|ReceivingApp|ReceivingFac|20120411070545||ORU^R01|59689|P|2.3|\r
