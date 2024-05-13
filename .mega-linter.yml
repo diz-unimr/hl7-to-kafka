@@ -1,0 +1,3 @@
+REPOSITORY_KICS_ARGUMENTS: --exclude-paths dev --fail-on high
+COPYPASTE_JSCPD_ARGUMENTS: --ignore-pattern "import .*;"
+JAVA_CHECKSTYLE_CONFIG_FILE: config/checkstyle/checkstyle.xml
