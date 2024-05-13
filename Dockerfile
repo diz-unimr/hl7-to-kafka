@@ -21,11 +21,14 @@ ARG GIT_REF=""
 ARG GIT_URL=""
 ARG BUILD_TIME=""
 ARG VERSION=0.0.0
-ENV APP_VERSION=${VERSION} \
+ENV TZ="Europe/Berlin" APP_VERSION=${VERSION} \
     SPRING_PROFILES_ACTIVE="prod"
-EXPOSE 8080
+EXPOSE 8080 2575
 
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=90", "org.springframework.boot.loader.launch.JarLauncher"]
+
+HEALTHCHECK --interval=25s --timeout=3s --retries=2 \
+    CMD curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1
 
 LABEL org.opencontainers.image.created=${BUILD_TIME} \
     org.opencontainers.image.authors="Sebastian Stöcker" \

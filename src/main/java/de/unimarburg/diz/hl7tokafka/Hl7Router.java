@@ -16,15 +16,15 @@ public class Hl7Router extends EndpointRouteBuilder {
 
     private static final DateTimeFormatter DATE_FORMATTER =
         DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-    private final String hl7Url;
+    private final String hl7Port;
     private final String encoding;
     private final String kafkaTopic;
 
 
-    public Hl7Router(@NotNull @Value("${endpoint.hl7.url}") String hl7Url,
+    public Hl7Router(@NotNull @Value("${endpoint.hl7.port}") String hl7Port,
         @NotNull @Value("${endpoint.hl7.encoding}") String encoding,
         @NotNull @Value("${endpoint.kafka.topic}") String kafkaTopic) {
-        this.hl7Url = hl7Url;
+        this.hl7Port = hl7Port;
         this.encoding = encoding;
         this.kafkaTopic = kafkaTopic;
     }
@@ -33,8 +33,9 @@ public class Hl7Router extends EndpointRouteBuilder {
     @Override
     public void configure() {
 
-        from(mllp(hl7Url).charsetName(encoding)).routeId("hl7Listener")
-            .onException(Exception.class).handled(true).transform(
+        from(mllp("0.0.0.0:" + hl7Port).charsetName(encoding))
+            .routeId("hl7Listener").onException(Exception.class).handled(true)
+            .transform(
                 ack()) // auto-generates negative ack because of exception
             .end().unmarshal().hl7()
             .log("Message received: ${header.CamelHL7MessageControl}").process(
@@ -42,6 +43,7 @@ public class Hl7Router extends EndpointRouteBuilder {
                     convertTimestamp(
                         ex.getIn().getHeader("CamelHL7Timestamp", String.class))))
 
+            .log("Timestamp converted with tz: " + ZoneId.systemDefault())
             .setHeader(KafkaConstants.KEY, header("CamelHL7MessageControl"))
             .to(kafka(kafkaTopic)).onCompletion()
             .log("Message send to Kafka topic: " + kafkaTopic).transform(ack())
