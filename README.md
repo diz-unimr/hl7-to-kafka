@@ -3,11 +3,11 @@
 
 > HL7 v2 to Kafka producer
 
-This project consist of a HL7v2 MLLP listener, which transfers received 
+This project consist of a HL7v2 MLLP listener, which transfers received
 messages to a Kafka topic.
 
-Messages are passed to a Kafka producer and send to a configured topic 
-without any mapping. The sender receives an acknowledgement message (ACK) of 
+Messages are passed to a Kafka producer and send to a configured topic
+without any mapping. The sender receives an acknowledgement message (ACK) of
 each message sent.
 
 ## <a name="deploy_config"></a> Configuration
@@ -41,12 +41,12 @@ Additional application properties can be set by overriding values form the [appl
 
 ## Development
 
-A [test setup](dev/compose.yaml) and a [script](dev/send-hl7.sh) to send an example 
+A [test setup](dev/compose.yaml) and a [script](dev/send-hl7.sh) to send an example
 message is available for development purposes.
 
 ### Builds
 
-Available image tags can be found at the [Container Registry](https://github.com/orgs/diz-unimr/packages?repo_name=hl7-to-kafka) or under 
+Available image tags can be found at the [Container Registry](https://github.com/orgs/diz-unimr/packages?repo_name=hl7-to-kafka) or under
 [Releases](https://github.com/diz-unimr/hl7-to-kafka/releases).
 
 ## License
