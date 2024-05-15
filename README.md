@@ -20,17 +20,16 @@ endpoint:
     port: 2575
     encoding: iso-8859-1
 
-| Variable                 | Default        | Description                                                    |
-|--------------------------|----------------|----------------------------------------------------------------|
-| BOOTSTRAP_SERVERS        | localhost:9092 | Kafka brokers                                                  |
-| SECURITY_PROTOCOL        | PLAINTEXT      | Kafka communication protocol                                   |
-| SSL_TRUST_STORE_PASSWORD |                | Truststore password (if using `SECURITY_PROTOCOL=SSL`)         |
-| SSL_KEY_STORE_PASSWORD   |                | Keystore password (if using `SECURITY_PROTOCOL=SSL`)           |
-| SSL_TRUST_STORE_PASSWORD |                | Truststore password (if using `SECURITY_PROTOCOL=SSL`)         |
-| ENDPOINT_KAFKA_TOPIC     | hl7-topic      | Kafka output topic to send HL7 messages to                     |
-| ENDPOINT_HL7_PORT        | 2575           | HL7 MLLP listener port                                         |
-| ENDPOINT_HL7_ENCODING    | iso-8859-1     | Default encoding to use if not specified in the message header |
-| LOG_LEVEL                | info           | Log level (error, warn, info, debug)                           |
+| Variable                       | Default        | Description                                                    |
+|--------------------------------|----------------|----------------------------------------------------------------|
+| KAFKA_BOOTSTRAP_SERVERS        | localhost:9092 | Kafka brokers                                                  |
+| KAFKA_SECURITY_PROTOCOL        | PLAINTEXT      | Kafka communication protocol                                   |
+| KAFKA_SSL_TRUST_STORE_PASSWORD |                | Truststore password (if using `SECURITY_PROTOCOL=SSL`)         |
+| KAFKA_SSL_KEY_STORE_PASSWORD   |                | Keystore password (if using `SECURITY_PROTOCOL=SSL`)           |
+| ENDPOINT_KAFKA_TOPIC           | hl7-topic      | Kafka output topic to send HL7 messages to                     |
+| ENDPOINT_HL7_PORT              | 2575           | HL7 MLLP listener port                                         |
+| ENDPOINT_HL7_ENCODING          | iso-8859-1     | Default encoding to use if not specified in the message header |
+| LOG_LEVEL                      | info           | Log level (error, warn, info, debug)                           |
 
 Additional application properties can be set by overriding values form the [application.yaml](src/main/resources/application.yaml) by using environment variables.
 
