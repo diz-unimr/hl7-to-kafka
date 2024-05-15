@@ -6,7 +6,9 @@ camel:
       brokers: ${BOOTSTRAP_SERVERS:localhost:9092}
       ssl-endpoint-algorithm: ${SECURITY_PROTOCOL:PLAINTEXT}
       ssl-truststore-password: ${SSL_TRUST_STORE_PASSWORD}
+      ssl-truststore-location: /opt/hl7-to-kafka/ssl/truststore.jks
       ssl-keystore-password: ${SSL_KEY_STORE_PASSWORD}
+      ssl-keystore-location: /opt/hl7-to-kafka/ssl/keystore.jks
 
 endpoint:
   kafka.topic: hl7-topic
