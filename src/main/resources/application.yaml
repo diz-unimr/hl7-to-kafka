@@ -7,6 +7,8 @@ camel:
       ssl-endpoint-algorithm: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
       ssl-truststore-password: ${KAFKA_SSL_TRUST_STORE_PASSWORD}
       ssl-keystore-password: ${KAFKA_SSL_KEY_STORE_PASSWORD}
+      ssl-truststore-location: ${KAFKA_SSL_TRUST_STORE_LOCATION_INTERNAL:/opt/hl7-to-kafka/ssl/truststore.jks}
+      ssl-keystore-location: ${KAFKA_SSL_KEY_STORE_LOCATION_INTERNAL:/opt/hl7-to-kafka/ssl/keystore.jks}
 
 endpoint:
   kafka.topic: ${KAFKA_TOPIC:hl7-topic}
