@@ -40,3 +40,4 @@ out/
 node_modules/
 
 application-dev.yml
+*.jks
