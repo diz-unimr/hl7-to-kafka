@@ -5,6 +5,7 @@ import static org.apache.camel.component.hl7.HL7.ack;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,16 +38,17 @@ public class Hl7Router extends EndpointRouteBuilder {
             .routeId("hl7Listener").onException(Exception.class).handled(true)
             .transform(
                 ack()) // auto-generates negative ack because of exception
-            .end().unmarshal().hl7()
-            .log("Message received: ${header.CamelHL7MessageControl}").process(
+            .end().unmarshal().hl7().log(LoggingLevel.DEBUG,
+                "Message received: ${header" + ".CamelHL7MessageControl}").process(
                 ex -> ex.getIn().setHeader(KafkaConstants.OVERRIDE_TIMESTAMP,
                     convertTimestamp(
                         ex.getIn().getHeader("CamelHL7Timestamp", String.class))))
 
-            .log("Timestamp converted with tz: " + ZoneId.systemDefault())
+            .log(LoggingLevel.DEBUG,
+                "Timestamp converted with tz: " + ZoneId.systemDefault())
             .setHeader(KafkaConstants.KEY, header("CamelHL7MessageControl"))
-            .to(kafka(kafkaTopic)).onCompletion()
-            .log("Message send to Kafka topic: " + kafkaTopic).transform(ack())
+            .to(kafka(kafkaTopic)).onCompletion().log(LoggingLevel.DEBUG,
+                "Message send to Kafka topic: " + kafkaTopic).transform(ack())
             .end();
     }
 
