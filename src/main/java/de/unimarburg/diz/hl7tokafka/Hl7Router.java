@@ -1,7 +1,5 @@
 package de.unimarburg.diz.hl7tokafka;
 
-import static org.apache.camel.component.hl7.HL7.ack;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -35,10 +33,7 @@ public class Hl7Router extends EndpointRouteBuilder {
     public void configure() {
 
         from(mllp("0.0.0.0:" + hl7Port).charsetName(encoding))
-            .routeId("hl7Listener").onException(Exception.class).handled(true)
-            .transform(
-                ack()) // auto-generates negative ack because of exception
-            .end().unmarshal().hl7().log(LoggingLevel.DEBUG,
+            .routeId("hl7Listener").unmarshal().hl7().log(LoggingLevel.DEBUG,
                 "Message received: ${header" + ".CamelHL7MessageControl}").process(
                 ex -> ex.getIn().setHeader(KafkaConstants.OVERRIDE_TIMESTAMP,
                     convertTimestamp(
@@ -47,9 +42,8 @@ public class Hl7Router extends EndpointRouteBuilder {
             .log(LoggingLevel.DEBUG,
                 "Timestamp converted with tz: " + ZoneId.systemDefault())
             .setHeader(KafkaConstants.KEY, header("CamelHL7MessageControl"))
-            .to(kafka(kafkaTopic)).onCompletion().log(LoggingLevel.DEBUG,
-                "Message send to Kafka topic: " + kafkaTopic).transform(ack())
-            .end();
+            .to(kafka(kafkaTopic)).log(LoggingLevel.DEBUG,
+                "Message send to Kafka topic: " + kafkaTopic).end();
     }
 
     private long convertTimestamp(String dateString) {
