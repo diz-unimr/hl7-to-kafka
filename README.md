@@ -35,8 +35,12 @@ Additional application properties can be set by overriding values form the [appl
 
 ## Error handling
 
-> TODO
+In general, the service expects incoming messages to conform to the HL7 2.x
+standard and the MLLP protocol.
 
+In case of errors due to missing mandatory message header fields (id and
+timestamp), formatting errors or unavailable Kafka broker connections (after
+a timeout), an ACK message with the Application error type (`AE`) is returned.
 
 ## Development
 

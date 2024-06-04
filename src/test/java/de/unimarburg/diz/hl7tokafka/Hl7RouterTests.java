@@ -1,11 +1,16 @@
 package de.unimarburg.diz.hl7tokafka;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
+
 import java.time.ZoneId;
 import java.util.TimeZone;
 import org.apache.camel.EndpointInject;
+import org.apache.camel.ExchangePattern;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.kafka.KafkaConstants;
+import org.apache.camel.component.mllp.MllpApplicationErrorAcknowledgementException;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.MockEndpointsAndSkip;
@@ -15,7 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @CamelSpringBootTest
 @EnableAutoConfiguration
-@SpringBootTest(properties = {"endpoint.hl7.url=2575",
+@SpringBootTest(properties = {"endpoint.hl7.port=2575",
     "endpoint.kafka.topic=hl7-topic"})
 @MockEndpointsAndSkip("kafka:hl7-topic")
 public class Hl7RouterTests {
@@ -29,7 +34,7 @@ public class Hl7RouterTests {
     @SuppressWarnings("checkstyle:LineLength")
     private static String hl7TestMessage() {
         return """
-            MSH|^~\\&|SendingApp|SendingFac|ReceivingApp|ReceivingFac|20120411070545||ORU^R01|59689|P|2.3|
+            MSH|^~\\&|SendingApp|SendingFac|ReceivingApp|ReceivingFac|20120411070545||ORU^R01|59689|P|2.3|\r
             PID|1||ICE999999^^^ICE^ICE||Testpatient^Testy^^^Mr||19740401|M|||123 Barrel Drive^^^^SW18 4RT|||||2||||||||||||||
             PV1|1|O|||||71^DUCK^DONALD||||||||||||12376|||||||||||||||||||||||||20120410160227||||||
             ORC|RE||12376|||||||100^DUCK^DASIY||71^DUCK^DONALD|||20120411070545|||||
@@ -51,6 +56,11 @@ public class Hl7RouterTests {
             """;
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
+    private static String hl7FaultyMessage() {
+        return "MSH|^~\\&|SendingApp|SendingFac|ReceivingApp|ReceivingFac|INVALID_DATE||ORU^R01|59689|P|2.3|\r\n";
+    }
+
     @Test
     public void testReceive() throws Exception {
         // set timezone for Kafka timestamp conversion
@@ -63,5 +73,22 @@ public class Hl7RouterTests {
 
         template.sendBody(hl7TestMessage());
         mock.assertIsSatisfied();
+    }
+
+    @Test
+    public void testParseError() throws Exception {
+        // must create an exchange to get the result as an exchange
+        // where we can get the caused exception
+        var exchange =
+            template.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
+        exchange.getIn().setBody(hl7FaultyMessage());
+
+        var out = template.send(exchange);
+        assertTrue("Should be failed", out.isFailed());
+        assertEquals(out.getException().getClass(),
+            MllpApplicationErrorAcknowledgementException.class);
+        assertTrue("Will produce an HL7 error ACK",
+            out.getException().getMessage()
+                .startsWith("HL7 Application Error Acknowledgment Received"));
     }
 }
