@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
+import org.apache.camel.component.hl7.HL7Constants;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -34,15 +35,16 @@ public class Hl7Router extends EndpointRouteBuilder {
 
         from(mllp("0.0.0.0:" + hl7Port).charsetName(encoding))
             .routeId("hl7Listener").unmarshal().hl7().log(LoggingLevel.DEBUG,
-                "Message received: ${header" + ".CamelHL7MessageControl}").process(
+                "Message received: ${header.CamelHL7MessageControl}").process(
                 ex -> ex.getIn().setHeader(KafkaConstants.OVERRIDE_TIMESTAMP,
-                    convertTimestamp(
-                        ex.getIn().getHeader("CamelHL7Timestamp", String.class))))
+                    convertTimestamp(ex.getIn()
+                        .getHeader(HL7Constants.HL7_TIMESTAMP, String.class))))
 
             .log(LoggingLevel.DEBUG,
                 "Timestamp converted with tz: " + ZoneId.systemDefault())
-            .setHeader(KafkaConstants.KEY, header("CamelHL7MessageControl"))
-            .to(kafka(kafkaTopic)).log(LoggingLevel.DEBUG,
+            .setHeader(KafkaConstants.KEY,
+                header(HL7Constants.HL7_MESSAGE_CONTROL)).to(kafka(kafkaTopic))
+            .log(LoggingLevel.DEBUG,
                 "Message send to Kafka topic: " + kafkaTopic).end();
     }
 

@@ -20,7 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @CamelSpringBootTest
 @EnableAutoConfiguration
-@SpringBootTest(properties = {"endpoint.hl7.url=2575",
+@SpringBootTest(properties = {"endpoint.hl7.port=2575",
     "endpoint.kafka.topic=hl7-topic"})
 @MockEndpointsAndSkip("kafka:hl7-topic")
 public class Hl7RouterTests {
