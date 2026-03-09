@@ -22,8 +22,8 @@ management.endpoints.web.exposure.include: info,health,camelroutes
 management.endpoint:
   health.enabled: true
   camelroutes:
-    enabled: true
     read-only: true
+    access: read_only
 # to configure logging levels
 #logging.level.org.springframework = INFO
 #logging.level.org.apache.camel.spring.boot = INFO
