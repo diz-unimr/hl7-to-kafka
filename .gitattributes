@@ -1,0 +1,5 @@
+# Set the default behavior, in case people don't have core.autocrlf set
+* text=auto
+
+# HL7v2 messages must keep CRLF line endings on checkout
+*.hl7 text eol=crlf

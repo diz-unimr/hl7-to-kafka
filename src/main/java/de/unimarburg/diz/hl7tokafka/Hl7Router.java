@@ -6,6 +6,8 @@ import io.micrometer.common.util.StringUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+
+import jakarta.validation.constraints.NotNull;
 import org.apache.camel.Expression;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
@@ -13,7 +15,6 @@ import org.apache.camel.component.hl7.HL7Constants;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.wildfly.common.annotation.NotNull;
 
 @Component
 public class Hl7Router extends EndpointRouteBuilder {

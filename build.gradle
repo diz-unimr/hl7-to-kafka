@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
-    id 'org.springframework.boot' version '3.2.5'
+    id 'org.springframework.boot' version '4.0.3'
 //    id 'com.diffplug.spotless' version '6.25.0'
 }
 
@@ -12,13 +12,13 @@ repositories {
 }
 
 ext {
-    set('springBootVersion', "3.2.5")
-    set('springCamelVersion', "4.6.0")
+    set('springBootVersion', "4.0.3")
+    set('springCamelVersion', "4.18.0")
 }
 
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-    implementation "org.springframework.boot:spring-boot-starter-undertow:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-validation:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
 
     implementation "org.apache.camel.springboot:camel-spring-boot-starter:$springCamelVersion"
@@ -38,7 +38,7 @@ dependencies {
 group = 'de.unimarburg.diz'
 version = '1.0.0-SNAPSHOT'
 description = 'HL7 to Kafka'
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 
 test {
