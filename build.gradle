@@ -13,7 +13,7 @@ repositories {
 
 ext {
     set('springBootVersion', "4.0.3")
-    set('springCamelVersion', "4.18.0")
+    set('springCamelVersion', "4.22.0")
 }
 
 dependencies {
