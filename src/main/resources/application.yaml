@@ -3,8 +3,8 @@ camel:
     kafka:
       brokers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
       security-protocol: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
-      ssl-truststore-password: ${KAFKA_SSL_TRUST_STORE_PASSWORD}
-      ssl-keystore-password: ${KAFKA_SSL_KEY_STORE_PASSWORD}
+      ssl-truststore-password: ${KAFKA_SSL_TRUST_STORE_PASSWORD:}
+      ssl-keystore-password: ${KAFKA_SSL_KEY_STORE_PASSWORD:}
       ssl-truststore-location: ${KAFKA_SSL_TRUST_STORE_LOCATION_INTERNAL:/opt/hl7-to-kafka/ssl/truststore.jks}
       ssl-keystore-location: ${KAFKA_SSL_KEY_STORE_LOCATION_INTERNAL:/opt/hl7-to-kafka/ssl/keystore.jks}
   main:
@@ -16,7 +16,7 @@ endpoint:
     key-expression:
   hl7:
     port: 2575
-    encoding: iso-8859-1
+    encoding:
 
 management.endpoints.web.exposure.include: info,health,camelroutes
 management.endpoint:
@@ -24,8 +24,4 @@ management.endpoint:
   camelroutes:
     read-only: true
     access: read_only
-# to configure logging levels
-#logging.level.org.springframework = INFO
-#logging.level.org.apache.camel.spring.boot = INFO
-#logging.level.org.apache.camel.impl = DEBUG
-#logging.level.sample.camel = DEBUG
+logging.level.hl7Listener: info

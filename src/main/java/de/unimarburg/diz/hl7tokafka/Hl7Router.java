@@ -45,7 +45,15 @@ public class Hl7Router extends EndpointRouteBuilder {
     @Override
     public void configure() {
 
-        from(mllp("0.0.0.0:" + hl7Port).charsetName(encoding)).routeId(
+        // configure mllp path and message encoding
+        var mllp = mllp("0.0.0.0:" + hl7Port);
+        if (!encoding.isBlank()) {
+            mllp.charsetName(encoding);
+        } else {
+            mllp.stringPayload(false);
+        }
+
+        from(mllp).routeId(
                 "hl7Listener")
             .unmarshal()
             .hl7(false)
