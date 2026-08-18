@@ -37,7 +37,7 @@ dependencies {
 group = 'de.unimarburg.diz'
 version = '1.0.0-SNAPSHOT'
 description = 'HL7 to Kafka'
-java.sourceCompatibility = JavaVersion.VERSION_21
+java.sourceCompatibility = JavaVersion.VERSION_25
 
 
 test {

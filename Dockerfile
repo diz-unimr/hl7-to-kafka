@@ -1,4 +1,4 @@
-FROM gradle:9.7.0-jdk21 AS build
+FROM gradle:9.7.0-jdk25 AS build
 WORKDIR /builder
 ENV GRADLE_USER_HOME=/gradle
 
@@ -10,7 +10,7 @@ RUN gradle build --info && \
     java -Djarmode=tools -jar build/libs/*.jar extract --layers --launcher  --destination extracted && \
     javac HealthCheck.java
 
-FROM gcr.io/distroless/java21:nonroot
+FROM gcr.io/distroless/java25:nonroot
 
 USER nonroot
 WORKDIR /opt/hl7-to-kafka
