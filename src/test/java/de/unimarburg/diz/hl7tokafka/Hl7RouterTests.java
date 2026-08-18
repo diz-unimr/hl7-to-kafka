@@ -1,14 +1,9 @@
 package de.unimarburg.diz.hl7tokafka;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.time.ZoneId;
-import java.util.TimeZone;
-
-import org.apache.camel.*;
+import org.apache.camel.EndpointInject;
+import org.apache.camel.ExchangePattern;
+import org.apache.camel.Produce;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.camel.component.mllp.MllpApplicationErrorAcknowledgementException;
 import org.apache.camel.component.mock.MockEndpoint;
@@ -22,11 +17,20 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
+import java.util.TimeZone;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
+
 @CamelSpringBootTest
 @EnableAutoConfiguration
 @SpringBootTest(properties = {"endpoint.hl7.port=2575",
         "endpoint.kafka.topic=hl7-topic"})
 @MockEndpointsAndSkip("kafka:hl7-topic")
+@SuppressWarnings("checkstyle:LineLength")
 public class Hl7RouterTests {
 
     @Produce("mllp:0.0.0.0:2575")
@@ -35,8 +39,7 @@ public class Hl7RouterTests {
     @EndpointInject("mock:kafka:hl7-topic")
     private MockEndpoint mock;
 
-    @SuppressWarnings("checkstyle:LineLength")
-    private static final String hl7TestMsg = "MSH|^~\\&|SWISSLAB|INFD|DBSERV||20190417111500|LAB|ORU^R01|test-msg.000042|P|2.2|||AL|NE\rPID|||789012||Müstermann^Erika||19810211000000|W\rPV1|||NEU||||||||||||||||33333333\rORC|RE|20190417_55555555|||IP||||20190417111000\r";
+    private static final String HL7_TEST_MESSAGE = "MSH|^~\\&|SWISSLAB|INFD|DBSERV||20190417111500|LAB|ORU^R01|test-msg.000042|P|2.2|||AL|NE\rPID|||789012||Müstermann^Erika||19810211000000|W\rPV1|||NEU||||||||||||||||33333333\rORC|RE|20190417_55555555|||IP||||20190417111000\r";
 
     @Test
     void testReceive() throws Exception {
@@ -48,9 +51,9 @@ public class Hl7RouterTests {
         mock.expectedHeaderReceived(KafkaConstants.KEY, "test-msg.000042");
         mock.expectedHeaderReceived(KafkaConstants.OVERRIDE_TIMESTAMP,
                 "1555492500000"); // 20190417111500
-        mock.expectedBodiesReceived(hl7TestMsg);
+        mock.expectedBodiesReceived(HL7_TEST_MESSAGE);
 
-        template.sendBody(hl7TestMsg);
+        template.sendBody(HL7_TEST_MESSAGE);
 
         mock.assertIsSatisfied();
     }
@@ -121,7 +124,7 @@ public class Hl7RouterTests {
             mock.expectedHeaderReceived(KafkaConstants.KEY,
                     "20190417_55555555");
 
-            template.sendBody(hl7TestMsg);
+            template.sendBody(HL7_TEST_MESSAGE);
             mock.assertIsSatisfied();
         }
     }
