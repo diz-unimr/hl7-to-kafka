@@ -1,5 +1,5 @@
 FROM gradle:9.7.0-jdk21 AS build
-WORKDIR /home/gradle/src
+WORKDIR /builder
 ENV GRADLE_USER_HOME=/gradle
 
 COPY build.gradle settings.gradle ./
@@ -7,17 +7,18 @@ RUN gradle clean build --no-daemon > /dev/null 2>&1 || true
 
 COPY --chown=gradle:gradle . .
 RUN gradle build --info && \
-    java -Djarmode=layertools -jar build/libs/*.jar extract && \
+    java -Djarmode=tools -jar build/libs/*.jar extract --layers --launcher  --destination extracted && \
     javac HealthCheck.java
 
 FROM gcr.io/distroless/java21:nonroot
 
 USER nonroot
 WORKDIR /opt/hl7-to-kafka
-COPY --from=build /home/gradle/src/dependencies/ ./
-COPY --from=build /home/gradle/src/spring-boot-loader/ ./
-COPY --from=build /home/gradle/src/application/ ./
-COPY --from=build /home/gradle/src/HealthCheck.class .
+COPY --from=build /builder/extracted/dependencies/ ./
+COPY --from=build /builder/extracted/spring-boot-loader/ ./
+COPY --from=build /builder/extracted/snapshot-dependencies/ ./
+COPY --from=build /builder/extracted/application/ ./
+COPY --from=build /builder/HealthCheck.class .
 
 ARG GIT_REF=""
 ARG GIT_URL=""

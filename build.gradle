@@ -1,8 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
-    id 'org.springframework.boot' version '4.0.3'
-//    id 'com.diffplug.spotless' version '6.25.0'
+    id 'org.springframework.boot' version '4.1.0'
 }
 
 repositories {
@@ -12,7 +11,7 @@ repositories {
 }
 
 ext {
-    set('springBootVersion', "4.0.3")
+    set('springBootVersion', "4.1.0")
     set('springCamelVersion', "4.22.0")
 }
 
@@ -60,15 +59,5 @@ jar {
 }
 
 bootJar {
-    mainClass.set('de.unimarburg.diz.hl7tokafka.Hl7ToKafkaApplication')
+    mainClass = 'de.unimarburg.diz.hl7tokafka.Hl7ToKafkaApplication'
 }
-
-//spotless {
-//    java {
-//        importOrder()
-//        removeUnusedImports()
-//        formatAnnotations()
-//        // palantirJavaFormat()
-//        googleJavaFormat().aosp().reflowLongStrings().skipJavadocFormatting()
-//    }
-//}
