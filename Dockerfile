@@ -1,4 +1,4 @@
-FROM gradle:9.7.0-jdk25 AS build
+FROM gradle:9.8.0-jdk25 AS build
 WORKDIR /builder
 ENV GRADLE_USER_HOME=/gradle
 
